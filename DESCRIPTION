@@ -16,3 +16,5 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
     rlang
+URL: https://github.com/CCICB/easyenrich
+BugReports: https://github.com/CCICB/easyenrich/issues
