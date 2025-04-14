@@ -1,0 +1,60 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# easyenrich
+
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![CRAN status](https://www.r-pkg.org/badges/version/easyenrich)](https://CRAN.R-project.org/package=easyenrich)
+<!-- badges: end -->
+
+Test whether counts of an element differs between 2 groups. For example identify which genes are present at different rates in lists of 'mutated genes' from two different cohorts. **easyenrich** creates 1 contingency table for every element in a list of vectors, summarising counts of their presence/absence in each cohort (represented as the different vectors in the list). It also runs the fisher test, applies MTC, and produces forest plots to visualise the results.
+
+
+## Installation
+
+You can install the development version of easyenrich like so:
+
+``` r
+if (!require("remotes"))
+    install.packages("remotes")
+
+remotes::install_github("CCICB/easyenrich")
+```
+
+## Quick Start
+
+
+```{r example}
+library(easyenrich)
+
+#Step 1: Create a list of two or more vectors.  
+input <- list(
+ colorectal = c("APC", "APC", "APC", "TP53", "APC"),
+ melanoma = c("BRAF", "BRAF", "BRAF", "BRAF", "BRAF", "TP53", "APC")
+)
+
+# Step 2: Create contingency tables
+contingency_tables <- list_to_contingency_tables(input)
+
+# Step 3: Compute fisher p values & odds ratios
+comparison <- contingency_tables_to_fisher(contingency_tables)
+
+# Step 4: Sort results based on fdr
+comparison[order(comparison$fdr),]
+
+# Step 5: Visualise Results
+plot_rainforest(comparison)
+```
