@@ -37,7 +37,7 @@ remotes::install_github("CCICB/easyenrich")
 ## Quick Start
 
 
-```{r example}
+```{r example, fig.height=2, fig.width=6}
 library(easyenrich)
 
 #Step 1: Create a list of two or more vectors.  
@@ -52,7 +52,7 @@ contingency_tables <- list_to_contingency_tables(input)
 # Step 3: Compute fisher p values & odds ratios
 comparison <- contingency_tables_to_fisher(contingency_tables)
 
-# Step 4: Sort results based on fdr
+# Step 4: Sort results based on fdr and print result
 comparison[order(comparison$fdr),]
 
 # Step 5: Visualise Results

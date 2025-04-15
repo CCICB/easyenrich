@@ -47,7 +47,7 @@ contingency_tables <- list_to_contingency_tables(input)
 # Step 3: Compute fisher p values & odds ratios
 comparison <- contingency_tables_to_fisher(contingency_tables)
 
-# Step 4: Sort results based on fdr
+# Step 4: Sort results based on fdr and print result
 comparison[order(comparison$fdr),]
 #>   element    p.value odds_ratio conf_level conf.int.lower conf.int.upper
 #> 3    BRAF 0.02777778   0.000000       0.95     0.00000000       1.028499
