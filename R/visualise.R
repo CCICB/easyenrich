@@ -52,6 +52,16 @@ plot_rainforest <- function(data, max_odds = 5){
   cols <- cols[startsWith(x = cols, prefix = "present_")]
   cohorts <- unique(sub(x=cols, pattern = "present_", replacement = ""))
 
+  if(length(cohorts) != 2) stop("B")
+
+  # Get conf interval
+  conf_level <- unique(data[["conf_level"]])
+  if(length(conf_level) != 1) stop("Different confidence levels present in data. Cannot produce forest plot.")
+  # conf_level_string = paste0(conf_level)
+  # Description
+  # description = paste0("Odds of being present in ",cohorts[2]," relative to ", cohorts[1], ")")
+  description = bquote(`Odds ratio (`*.(conf_level)*`% CI):`~frac(.(cohorts[2]),.(cohorts[1])))
+
   # Create Plot Plot
   ggplot2::ggplot(
     data = data,
@@ -88,12 +98,14 @@ plot_rainforest <- function(data, max_odds = 5){
     ) +
 
     ggplot2::ylab(NULL) +
-    ggplot2::xlab("Odds ratio") +
+    # ggplot2::xlab("Odds ratio") +
+    ggplot2::xlab(description) +
     ggplot2::coord_cartesian(xlim = c(0, max_odds)) +
     ggplot2::scale_x_continuous(
       expand = ggplot2::expansion(add = c(0.2, 0.5)),
       oob = scales::oob_squish_infinite,
-      breaks = 0:max_odds
+      breaks = 0:max_odds#,
+      #transform="log"
     ) +
     ggplot2::scale_y_discrete(
       position="left",
@@ -104,8 +116,8 @@ plot_rainforest <- function(data, max_odds = 5){
     ggplot2::annotate(geom = "segment", x=0, xend=max_odds, y=0, linewidth=1) +
 
     # Add text labels
-    ggplot2::annotate("text", x = 0.9, y = nelements + 0.5, label = paste0( "[", cohorts[1], "]"), hjust=1, fontface="bold", size=5) +
-    ggplot2::annotate("text", x = 1.1, y = nelements + 0.5, label = paste0( "[",cohorts[2], "]"), hjust=0, fontface="bold", size=5) +
+    # ggplot2::annotate("text", x = 0.9, y = nelements + 0.5, label = paste0( "[", cohorts[1], "]"), hjust=1, fontface="bold", size=5) +
+    # ggplot2::annotate("text", x = 1.1, y = nelements + 0.5, label = paste0( "[",cohorts[2], "]"), hjust=0, fontface="bold", size=5) +
     ggplot2::scale_shape_manual(values = c("TRUE" = 0, "FALSE" = 15)) +
     ggplot2::theme_minimal() +
     ggplot2::theme(

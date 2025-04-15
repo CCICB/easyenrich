@@ -50,6 +50,7 @@ input <- list(
 contingency_tables <- list_to_contingency_tables(input)
 
 # Step 3: Compute fisher p values & odds ratios
+# Odds ratios can be interpreted as the relative odds of seeing gene <X> in a colorectal cancer VS melanoma (based on order of cohorts in original input list)
 comparison <- contingency_tables_to_fisher(contingency_tables)
 
 # Step 4: Sort results based on fdr and print result
