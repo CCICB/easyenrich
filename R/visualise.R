@@ -44,6 +44,9 @@ plot_rainforest <- function(data, max_odds = 5){
   data[["conf.int.lower.fixed"]] <- ifelse(data[["conf.int.lower"]] > max_odds, max_odds + 0.3,  data[["conf.int.lower"]])
   data[["odds_ratio_fixed"]] <- ifelse(data[["odds_ratio"]] > max_odds, max_odds + 0.3,  data[["odds_ratio"]])
 
+  # Elements to plot
+  nelements <- nrow(data)
+
   # Get cohort names
   cols <- colnames(data)
   cols <- cols[startsWith(x = cols, prefix = "present_")]
@@ -99,9 +102,10 @@ plot_rainforest <- function(data, max_odds = 5){
 
     # Add line at base bottom
     ggplot2::annotate(geom = "segment", x=0, xend=max_odds, y=0, linewidth=1) +
+
     # Add text labels
-    ggplot2::annotate("text", x = 0.9, y = 3.5, label = paste0( "[", cohorts[1], "]"), hjust=1, fontface="bold", size=5) +
-    ggplot2::annotate("text", x = 1.1, y = 3.5, label = paste0( "[",cohorts[2], "]"), hjust=0, fontface="bold", size=5) +
+    ggplot2::annotate("text", x = 0.9, y = nelements + 0.5, label = paste0( "[", cohorts[1], "]"), hjust=1, fontface="bold", size=5) +
+    ggplot2::annotate("text", x = 1.1, y = nelements + 0.5, label = paste0( "[",cohorts[2], "]"), hjust=0, fontface="bold", size=5) +
     ggplot2::scale_shape_manual(values = c("TRUE" = 0, "FALSE" = 15)) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
