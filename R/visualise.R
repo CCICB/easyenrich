@@ -44,7 +44,10 @@ plot_rainforest <- function(data, max_odds = 5){
   data[["conf.int.lower.fixed"]] <- ifelse(data[["conf.int.lower"]] > max_odds, max_odds + 0.3,  data[["conf.int.lower"]])
   data[["odds_ratio_fixed"]] <- ifelse(data[["odds_ratio"]] > max_odds, max_odds + 0.3,  data[["odds_ratio"]])
 
-
+  # Get cohort names
+  cols <- colnames(data)
+  cols <- cols[startsWith(x = cols, prefix = "present_")]
+  cohorts <- unique(sub(x=cols, pattern = "present_", replacement = ""))
 
   # Create Plot Plot
   ggplot2::ggplot(
@@ -76,11 +79,11 @@ plot_rainforest <- function(data, max_odds = 5){
       arrow = grid::arrow(ends = "both", type = "open", length = ggplot2::unit(6, units = "points"), angle = 90),
       linetype = "solid"
     ) +
-
     ggplot2::geom_point(
       ggplot2::aes(shape = .data[["odds_ratio"]] > max_odds),
       size=3, show.legend = FALSE
     ) +
+
     ggplot2::ylab(NULL) +
     ggplot2::xlab("Odds ratio") +
     ggplot2::coord_cartesian(xlim = c(0, max_odds)) +
@@ -90,8 +93,15 @@ plot_rainforest <- function(data, max_odds = 5){
       breaks = 0:max_odds
     ) +
     ggplot2::scale_y_discrete(
-      position="left"
+      position="left",
+      expand = ggplot2::expansion(add = c(0, 0.6))
     ) +
+
+    # Add line at base bottom
+    ggplot2::annotate(geom = "segment", x=0, xend=max_odds, y=0, linewidth=1) +
+    # Add text labels
+    ggplot2::annotate("text", x = 0.9, y = 3.5, label = paste0( "[", cohorts[1], "]"), hjust=1, fontface="bold", size=5) +
+    ggplot2::annotate("text", x = 1.1, y = 3.5, label = paste0( "[",cohorts[2], "]"), hjust=0, fontface="bold", size=5) +
     ggplot2::scale_shape_manual(values = c("TRUE" = 0, "FALSE" = 15)) +
     ggplot2::theme_minimal() +
     ggplot2::theme(

@@ -67,6 +67,8 @@ list_to_contingency_tables <- function(input_list) {
 #'
 #' @param contingencies a named list of contingency tables
 #' @param min_count only consider elements present at least this many times in one cohort.
+#' @param alternative alternative hypothesis. By default tests whether odds ratio is significanly different to 1 (enriched in either group).
+#' If you just want to check for enrichments in first group, set to "less" or for enrichments in second group "greater"
 #' @returns data.frame describing results of fisher test.
 #' Includes columns 'present' (total number of elements observed in all cohorts and 'absent' total number of entries not matching that element)
 #' @export
@@ -84,7 +86,11 @@ list_to_contingency_tables <- function(input_list) {
 #' # Step 3: Compute fisher p values & odds ratios
 #' contingency_tables_to_fisher(contingency_tables)
 #'
-contingency_tables_to_fisher <- function(contingencies, min_count = 0){
+#' # Alternatively compute enrichments in melanoma group (not colorectal group) - is odds ratio > 1.
+#' # This is based on the order of elements in list
+#' contingency_tables_to_fisher(contingency_tables, alternative = "greater")
+#'
+contingency_tables_to_fisher <- function(contingencies, alternative = "two.sided", min_count = 0){
 
   # Setup empty dataframe for early returns
   empty_df <- data.frame(
@@ -105,6 +111,10 @@ contingency_tables_to_fisher <- function(contingencies, min_count = 0){
     total_absent = integer(0),
     stringsAsFactors = FALSE
   )
+
+  if(length(alternative) > 1 || !alternative %in% c("two.sided", "greater", "less")){
+    stop("'alternative' must be one of 'two.sided', 'greater', or 'less', not [", paste0(as.character(alternative), collapse = ","), "]")
+  }
 
   # Grab elements
   elements <- names(contingencies)
@@ -160,7 +170,7 @@ contingency_tables_to_fisher <- function(contingencies, min_count = 0){
 
   # Run Fisher Test
   ls_fisher = lapply(contingencies, function(mx) {
-    fisher_to_df(stats::fisher.test(mx))
+    fisher_to_df(stats::fisher.test(mx, alternative = alternative))
   })
 
 

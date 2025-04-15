@@ -4,10 +4,17 @@
 \alias{contingency_tables_to_fisher}
 \title{Compute Fisher Test on Contingency tables}
 \usage{
-contingency_tables_to_fisher(contingencies, min_count = 0)
+contingency_tables_to_fisher(
+  contingencies,
+  alternative = "two.sided",
+  min_count = 0
+)
 }
 \arguments{
 \item{contingencies}{a named list of contingency tables}
+
+\item{alternative}{alternative hypothesis. By default tests whether odds ratio is significanly different to 1 (enriched in either group).
+If you just want to check for enrichments in first group, set to "less" or for enrichments in second group "greater"}
 
 \item{min_count}{only consider elements present at least this many times in one cohort.}
 }
@@ -30,5 +37,9 @@ contingency_tables <- list_to_contingency_tables(input)
 
 # Step 3: Compute fisher p values & odds ratios
 contingency_tables_to_fisher(contingency_tables)
+
+# Alternatively compute enrichments in melanoma group (not colorectal group) - is odds ratio > 1.
+# This is based on the order of elements in list
+contingency_tables_to_fisher(contingency_tables, alternative = "greater")
 
 }

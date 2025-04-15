@@ -37,7 +37,7 @@ remotes::install_github("CCICB/easyenrich")
 ## Quick Start
 
 
-```{r example, fig.height=2, fig.width=6}
+```{r example, fig.height=3, fig.width=7}
 library(easyenrich)
 
 #Step 1: Create a list of two or more vectors.  
