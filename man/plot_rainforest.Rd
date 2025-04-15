@@ -4,7 +4,7 @@
 \alias{plot_rainforest}
 \title{Create rainforest plot}
 \usage{
-plot_rainforest(data, max_odds = 5)
+plot_rainforest(data, max_odds = 10)
 }
 \arguments{
 \item{data}{a data.frame created by \code{\link[=contingency_tables_to_fisher]{contingency_tables_to_fisher()}}. Must include the columns "element", "p.value", "odds_ratio", "conf_level", "conf.int.lower", "conf.int.upper", "fdr".}

@@ -23,7 +23,7 @@
 #'
 #' # Step 5: Visualise Results
 #' plot_rainforest(comparison)
-plot_rainforest <- function(data, max_odds = 5){
+plot_rainforest <- function(data, max_odds = 10){
 
   # Validation
   requireNamespace("ggplot2", quietly = TRUE)
@@ -57,7 +57,8 @@ plot_rainforest <- function(data, max_odds = 5){
   # Get conf interval
   conf_level <- unique(data[["conf_level"]])
   if(length(conf_level) != 1) stop("Different confidence levels present in data. Cannot produce forest plot.")
-  # conf_level_string = paste0(conf_level)
+
+
   # Description
   # description = paste0("Odds of being present in ",cohorts[2]," relative to ", cohorts[1], ")")
   description = bquote(`Odds ratio (`*.(conf_level)*`% CI):`~frac(.(cohorts[2]),.(cohorts[1])))
@@ -98,20 +99,19 @@ plot_rainforest <- function(data, max_odds = 5){
     ) +
 
     ggplot2::ylab(NULL) +
-    # ggplot2::xlab("Odds ratio") +
     ggplot2::xlab(description) +
     ggplot2::coord_cartesian(xlim = c(0, max_odds)) +
     ggplot2::scale_x_continuous(
       expand = ggplot2::expansion(add = c(0.2, 0.5)),
       oob = scales::oob_squish_infinite,
-      breaks = 0:max_odds#,
-      #transform="log"
+      breaks=max_odds_to_break_vector(max_odds)
+      # breaks = c(0, seq_len(max_odds)[seq_len(max_odds) <= 10 | seq_len(max_odds) %% 5 == 0 | seq_len(max_odds) == max_odds])#,
     ) +
     ggplot2::scale_y_discrete(
       position="left",
       expand = ggplot2::expansion(add = c(0, 0.6))
     ) +
-
+    ggplot2::geom_vline(xintercept = max_odds, linetype="dashed", colour="grey30") +
     # Add line at base bottom
     ggplot2::annotate(geom = "segment", x=0, xend=max_odds, y=0, linewidth=1) +
 
@@ -127,4 +127,13 @@ plot_rainforest <- function(data, max_odds = 5){
       axis.text.y = ggplot2::element_text(face="bold", size = 14, hjust = 1)
       )
 
+}
+
+max_odds_to_break_vector <- function(x){
+  positive_breaks = seq_len(x)
+  divisor = max(1, round(x/5))
+
+  new_breaks <- seq(from=1, to=x, by=divisor)
+  always_breaks = c(0, 1)
+  unique(sort(c(always_breaks, new_breaks)))
 }
